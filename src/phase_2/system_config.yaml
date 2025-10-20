@@ -1,0 +1,194 @@
+# ============================================================================
+# SOLAR PV ENERGY MANAGEMENT SYSTEM - CONFIGURATION
+# ============================================================================
+# 
+# This file controls ALL system behavior. Edit values here, no code changes needed!
+# 
+# To use a different battery: just change the values under 'battery' section
+# To test different strategies: change 'weather_strategy' or 'decision' settings
+#
+
+config_version: '1.0.0'
+system_name: 'My Home Energy System'
+location: 'Tunis, Tunisia'  # Optional
+
+# ============================================================================
+# BATTERY CONFIGURATION
+# ============================================================================
+# Change these values to match your battery specifications
+#
+battery:
+  # Basic Specifications
+  capacity_kwh: 100            # Total battery capacity (kWh)
+  max_charge_kw: 5.0              # Maximum charging power (kW)
+  max_discharge_kw: 5.0           # Maximum discharge power (kW)
+  
+  # Efficiency and Losses
+  round_trip_efficiency: 0.90     # Charge + discharge efficiency (0-1)
+  self_discharge_per_day: 0.001   # Daily energy loss (fraction, e.g. 0.1%)
+  
+  # Battery Protection Limits (IMPORTANT!)
+  min_soc_percent: 5           # Don't discharge below this (normal operation)
+  max_soc_percent: 95.0           # Don't charge above this (normal operation)
+  emergency_min_soc: 0.0          # Absolute minimum (emergency only)
+  emergency_max_soc: 100.0         # Absolute maximum (emergency only)
+  
+  # Initial State
+  initial_soc_percent: 48.2       # Starting state of charge (%)
+  
+  # Optional: Temperature Effects
+  enable_temp_derating: false     # Enable temperature-based performance reduction
+  optimal_temp_c: 25.0            # Optimal temperature (°C)
+  temp_derating_coeff: 0.005      # Performance loss per °C deviation
+  
+  # Optional: Degradation Modeling
+  enable_degradation: false       # Track battery capacity loss over time
+  degradation_per_cycle: 0.0001   # Capacity loss per full charge/discharge cycle
+  calendar_aging_per_year: 0.02   # Annual capacity loss (2% per year)
+  
+  # Metadata (Optional)
+  manufacturer: 'Generic'
+  model: 'Home Battery 10kWh'
+  warranty_years: 10
+  install_date: null              # Format: '2024-01-15' or null
+
+# ============================================================================
+# GRID CONNECTION & PRICING
+# ============================================================================
+grid:
+  # Connection Status
+  connected: false                # NOT connected to grid in our scenario
+  can_export: false               # Cannot sell to grid in Tunisia
+  max_import_kw: 0                # No grid import available
+  max_export_kw: 0                # No grid export available
+  
+  # Electricity Pricing (not relevant for off-grid)
+  buy_price_kwh: 0.0
+  sell_price_kwh: 0.0
+
+# ============================================================================
+# CONSUMPTION PATTERNS
+# ============================================================================
+consumption:
+  # Typical Usage
+  avg_daily_kwh: 3.0             # Average daily consumption (kWh/day)
+  peak_morning_hours: [6, 7, 8, 9]       # Morning peak (breakfast, getting ready)
+  peak_evening_hours: [17, 18, 19, 20, 21]  # Evening peak (cooking, entertainment)
+  
+  # Seasonal Variation
+  summer_multiplier: 1.3          # Summer consumption factor (AC usage)
+  winter_multiplier: 1.1          # Winter consumption factor (heating)
+  
+  # Major Appliances (Optional - for detailed modeling)
+  major_appliances:
+    air_conditioner: 2.5          # kW
+    electric_heater: 2.0          # kW
+    water_heater: 3.0             # kW
+    washing_machine: 1.5          # kW
+
+# ============================================================================
+# WEATHER-BASED STRATEGY
+# ============================================================================
+weather_strategy:
+  # Bad Weather Detection
+  bad_weather_threshold: 0.5      # Clearness ratio below this = bad weather
+  forecast_horizon_hours: 72      # Look ahead this many hours (3 days)
+  
+  # Emergency Charging Strategy
+  emergency_charge_threshold: 0.3  # If forecast shows production < 30% of normal, charge to 100%
+  emergency_charge_target: 95.0    # Target SOC for emergency charging (%)
+  
+  # Strategy Mode
+  strategy_mode: 'balanced'        # Options: 'conservative', 'balanced', 'aggressive'
+                                   # conservative: prioritize battery health
+                                   # balanced: balance savings and battery life
+                                   # aggressive: maximize cost savings
+
+# ============================================================================
+# DECISION ENGINE THRESHOLDS
+# ============================================================================
+decision:
+  # Battery Usage Thresholds
+  charge_threshold_kw: 0.1       # Need at least this much surplus to charge battery
+  discharge_threshold_kw: 0.1     # Need at least this much deficit to discharge
+  
+  # Grid Interaction Thresholds
+  sell_threshold_kw: 2.0          # Sell to grid if surplus exceeds this
+  buy_threshold_kw: 1.0           # Buy from grid if deficit exceeds this
+  
+  # Priority Mode
+  priority_mode: 'cost_optimization'  # Options:
+                                      # 'cost_optimization': minimize electricity costs
+                                      # 'self_sufficiency': maximize grid independence
+                                      # 'battery_health': maximize battery lifespan
+  
+  # Update Frequency
+  decision_interval_minutes: 60   # Make decisions every X minutes
+
+# ============================================================================
+# NOTIFICATIONS & ALERTS
+# ============================================================================
+notification:
+  # Alert Levels
+  enable_info: true               # Info notifications (e.g., "Charging started")
+  enable_warnings: true           # Warnings (e.g., "Low battery")
+  enable_critical: true           # Critical alerts (e.g., "Battery failure")
+  
+  # Notification Channels
+  channels:                       # List of channels to use
+    - console                     # Print to console
+    - log                         # Write to log file
+    # - email                     # Email alerts (future)
+    # - sms                       # SMS alerts (future)
+    # - chatbot                   # Chatbot integration (future)
+  
+  # Rate Limiting
+  max_notifications_per_hour: 10  # Prevent notification spam
+  
+  # Chatbot Integration (Future)
+  chatbot_enabled: false
+  chatbot_endpoint: null          # API endpoint for chatbot
+
+# ============================================================================
+# SYSTEM-WIDE SETTINGS
+# ============================================================================
+enable_logging: true              # Enable detailed system logging
+log_level: 'INFO'                 # Options: 'DEBUG', 'INFO', 'WARNING', 'ERROR'
+data_retention_days: 365          # Keep historical data for X days
+
+
+# ============================================================================
+# QUICK CONFIG TEMPLATES (Uncomment to use)
+# ============================================================================
+
+# --- TESLA POWERWALL 2 ---
+# battery:
+#   capacity_kwh: 13.5
+#   max_charge_kw: 5.0
+#   max_discharge_kw: 5.0
+#   round_trip_efficiency: 0.90
+#   manufacturer: 'Tesla'
+#   model: 'Powerwall 2'
+
+# --- LG CHEM RESU 10H ---
+# battery:
+#   capacity_kwh: 9.8
+#   max_charge_kw: 5.0
+#   max_discharge_kw: 5.0
+#   round_trip_efficiency: 0.95
+#   manufacturer: 'LG Chem'
+#   model: 'RESU 10H'
+
+# --- SMALL SYSTEM (Budget) ---
+# battery:
+#   capacity_kwh: 5.0
+#   max_charge_kw: 3.0
+#   max_discharge_kw: 3.0
+
+# --- LARGE SYSTEM (High Consumption) ---
+# battery:
+#   capacity_kwh: 20.0
+#   max_charge_kw: 10.0
+#   max_discharge_kw: 10.0
+#   consumption:
+#     avg_daily_kwh: 50.0

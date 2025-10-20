@@ -1,0 +1,14 @@
+{
+  "analysis_period": "2023-01-01 00:00:00 to 2023-06-30 23:00:00",
+  "total_hours": 4344,
+  "system_capacity_kw": 1.0,
+  "total_production_kwh": 949.418,
+  "capacity_factor_percent": 26.227016574585637,
+  "best_model_mae": 0.0363,
+  "best_model_name": "LSTM",
+  "random_forest_r2": 0.9576367545575937,
+  "xgboost_r2": 0.973283979534512,
+  "sarima_mae_improvement_percent": 74.68435443429587,
+  "lstm_available": true,
+  "lstm_r2": 0.9552345816086052
+}

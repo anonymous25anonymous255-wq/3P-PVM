@@ -1,0 +1,19 @@
+[
+    "YEAR",
+    "MO",
+    "DY",
+    "HR",
+    "ALLSKY_SFC_SW_DWN",
+    "WS10M",
+    "CLRSKY_SFC_SW_DWN",
+    "T2M",
+    "ALLSKY_SFC_LW_DWN",
+    "PS",
+    "RH2M",
+    "ALLSKY_SFC_SW_DIFF",
+    "PRECTOTCORR",
+    "ALLSKY_SFC_SW_DNI",
+    "CELL_TEMP_C",
+    "TEMP_DERATE",
+    "POA_IRRADIANCE"
+]
